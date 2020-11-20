@@ -14,6 +14,7 @@
             <th>Tipo Asistencias</th>
             <th>Fecha Inicio</th>
             <th>Fecha Fin</th>
+            <th>Beneficios</th>
         </tr>
         {% for programa in programas %}
             <tr>
@@ -25,6 +26,7 @@
                 </ul> </td>
               <td>{{ programa.fecha_inicio|date:"SHORT_DATE_FORMAT" }}</td>
               <td>{{ programa.fecha_fin|default_if_none:"---"  }}</td>
+              <td><a href="{% url 'programa:detalle_beneficio' programa.id %}">Ver beneficios</a></td>
             </tr>
         {% endfor %}
    </table>

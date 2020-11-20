@@ -1,6 +1,8 @@
 from django import forms
 from django.core.exceptions import ValidationError
 from django.forms import DateInput
+from django.forms import widgets
+import datetime
 
 from .models import Programa, AsignacionBeneficio
 
@@ -32,6 +34,26 @@ class ProgramaForm(forms.ModelForm):
         if fecha_fin and fecha_inicio > fecha_fin:
             raise ValidationError(
                 {'fecha_inicio': 'La Fecha de Inicio no puede ser posterior que la fecha fin'},
+                code='invalido'
+            )
+        return cleaned_data
+
+
+class AsignacionBeneficioForm(forms.ModelForm):
+    class Meta:
+        model = AsignacionBeneficio
+        fields = ('programa','persona','tipo_asistencia','fecha_entrega','cantidad')
+        widgets = {
+        'fecha_entrega': DateInput(format='%y-%m-%d', attrs={'type': 'date'})
+        }
+
+    def clean(self):
+        cleaned_data = super().clean()
+        fecha_entrega = self.cleaned_data['fecha_entrega']
+        # Verifica que la fecha de inicio sea anterior a fecha fin.
+        if fecha_entrega > datetime.date.today():
+            raise ValidationError(
+                {'fecha_entrega': 'La Fecha de entrega no puede ser posterior que la fecha actual'},
                 code='invalido'
             )
         return cleaned_data
